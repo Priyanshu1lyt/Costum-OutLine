@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "customoutline",
+  "version": "${version}",
+  "name": "CustomOutline",
+  "description": "Fully customize the glowing entity outline: colors, effects and per-entity settings.",
+  "authors": ["NotHeartYT"],
+  "license": "All-Rights-Reserved",
+  "environment": "client",
+  "entrypoints": {
+    "client": ["dev.notheartyt.customoutline.CustomOutlineClient"],
+    "modmenu": ["dev.notheartyt.customoutline.ModMenuIntegration"]
+  },
+  "mixins": ["customoutline.mixins.json"],
+  "depends": {
+    "fabricloader": ">=0.18.1",
+    "minecraft": "~1.21.11",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}
