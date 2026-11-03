@@ -26,6 +26,21 @@ public final class OutlineColors {
         return compute(p);
     }
 
+    /** Block outline color as ARGB (vanilla is a translucent dark line). */
+    public static int resolveBlock(int vanillaArgb) {
+        OutlineProfile p = OutlineConfig.get().blocks;
+        if (p == null || !p.enabled) return vanillaArgb;
+        int a = clamp(Math.round(p.opacity * 255f));
+        return (a << 24) | compute(p);
+    }
+
+    /** Block outline line width, or the vanilla width when not customized. */
+    public static float resolveBlockWidth(float vanillaWidth) {
+        OutlineConfig cfg = OutlineConfig.get();
+        if (cfg.blocks == null || !cfg.blocks.enabled || cfg.blockThickness < 0.05f) return vanillaWidth;
+        return cfg.blockThickness;
+    }
+
     private static OutlineProfile pick(Entity e, OutlineConfig c) {
         if (!c.custom.isEmpty()) {
             OutlineProfile cp = c.custom.get(Registries.ENTITY_TYPE.getId(e.getType()).toString());

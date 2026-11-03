@@ -24,7 +24,9 @@ public class OutlineConfigScreen extends Screen {
     private static final int NEON2 = 0xFFFF2EE6;
     private static final int TEXT = 0xFFE6EAF2;
     private static final int DIM = 0xFF8A93A6;
-    private static final String[] TABS = {"Default", "Players", "Villagers", "Animals", "Mobs", "Custom"};
+    private static final String[] TABS = {"Default", "Players", "Villagers", "Animals", "Mobs", "Custom", "Blocks"};
+    private static final int TAB_CUSTOM = 5;
+    private static final int TAB_BLOCKS = 6;
     private static final int[] PRESETS = {
             0xFF3B3B, 0xFF9F1C, 0xFFEE32, 0x39FF14, 0x00FFFF, 0x3A86FF, 0xB14AFF, 0xFF2E97, 0xFFFFFF
     };
@@ -53,6 +55,7 @@ public class OutlineConfigScreen extends Screen {
             case 2: return c.villagers;
             case 3: return c.animals;
             case 4: return c.mobs;
+            case TAB_BLOCKS: return c.blocks;
             default:
                 Identifier id = Identifier.tryParse(customId);
                 return id == null ? null : c.custom.get(id.toString());
@@ -88,12 +91,12 @@ public class OutlineConfigScreen extends Screen {
                 Text.literal("Outlines: " + (cfg.outlinesEnabled ? "ON" : "OFF")), btn -> {
                     cfg.outlinesEnabled = !cfg.outlinesEnabled;
                     clearAndInit();
-                }).dimensions(lx, py + 168, 96, 20).build());
+                }).dimensions(lx, py + 186, 96, 20).build());
         addDrawableChild(ButtonWidget.builder(
                 Text.literal("Teams: " + (cfg.respectTeamColors ? "Keep" : "Override")), btn -> {
                     cfg.respectTeamColors = !cfg.respectTeamColors;
                     clearAndInit();
-                }).dimensions(lx, py + 190, 96, 20).build());
+                }).dimensions(lx, py + 208, 96, 20).build());
 
         // ---- bottom row ----
         int bw = (pw - 20 - 8) / 3;
@@ -115,7 +118,7 @@ public class OutlineConfigScreen extends Screen {
         // ---- right column: profile editor ----
         int y = py + 50;
 
-        if (tab == 5) {
+        if (tab == TAB_CUSTOM) {
             TextFieldWidget idField = new TextFieldWidget(textRenderer, rx, y, rw - 84, 18, Text.literal("Entity ID"));
             idField.setMaxLength(64);
             idField.setText(customId);
@@ -210,6 +213,15 @@ public class OutlineConfigScreen extends Screen {
                 v -> p.brightness = (float) (double) v, v -> Math.round(v * 100) + "%"));
         addDrawableChild(new ValueSlider(rx + hw + 4, y, hw, 18, "Speed", 0.1, 5, p.speed,
                 v -> p.speed = (float) (double) v, v -> String.format(Locale.ROOT, "%.1fx", v)));
+
+        if (tab == TAB_BLOCKS) {
+            y += 21;
+            addDrawableChild(new ValueSlider(rx, y, hw, 18, "Opacity", 0.05, 1, p.opacity,
+                    v -> p.opacity = (float) (double) v, v -> Math.round(v * 100) + "%"));
+            addDrawableChild(new ValueSlider(rx + hw + 4, y, hw, 18, "Width", 0, 8, cfg.blockThickness,
+                    v -> cfg.blockThickness = (float) (double) v,
+                    v -> v < 0.05 ? "Vanilla" : String.format(Locale.ROOT, "%.1f", v)));
+        }
     }
 
     private void setChannel(OutlineProfile p, int shift, int value) {
@@ -276,7 +288,7 @@ public class OutlineConfigScreen extends Screen {
             ctx.fill(s[0] + 3, s[1] + 3, s[0] + s[2] - 3, s[1] + s[3] - 3, 0xFF000000 | s[4]);
         }
         if (!status.isEmpty()) {
-            ctx.drawText(textRenderer, status, px + 10, py + ph - 38, NEON2, false);
+            ctx.drawText(textRenderer, status, rx, py + ph - 38, NEON2, false);
         }
     }
 

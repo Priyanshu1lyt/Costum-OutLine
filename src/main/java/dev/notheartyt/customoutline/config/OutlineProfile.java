@@ -1,6 +1,6 @@
 package dev.notheartyt.customoutline.config;
 
-/** One set of outline settings (used for a category or a single entity type). */
+/** One set of outline settings (used for a category, a single entity type, or the block outline). */
 public class OutlineProfile {
     /** If false, this profile is skipped and the next fallback is used. */
     public boolean enabled = false;
@@ -11,6 +11,8 @@ public class OutlineProfile {
     public float brightness = 1.0f;
     /** Animation speed multiplier, 0.1 - 5.0. */
     public float speed = 1.0f;
+    /** 0.05 - 1.0. Only used by the block outline (entity outlines ignore alpha). */
+    public float opacity = 1.0f;
 
     public OutlineProfile() {
     }

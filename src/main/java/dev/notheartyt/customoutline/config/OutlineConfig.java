@@ -19,7 +19,7 @@ public class OutlineConfig {
     private static final Path PATH = FabricLoader.getInstance().getConfigDir().resolve("customoutline.json");
     private static OutlineConfig instance = new OutlineConfig();
 
-    /** Master switch. False hides all glowing outlines. */
+    /** Master switch. False hides all glowing entity outlines. */
     public boolean outlinesEnabled = true;
     /** True keeps vanilla team colors (scoreboard teams) untouched. */
     public boolean respectTeamColors = true;
@@ -31,6 +31,17 @@ public class OutlineConfig {
     public OutlineProfile mobs = new OutlineProfile(0xFF3B3B);
     /** Per entity type id, e.g. "minecraft:creeper". */
     public Map<String, OutlineProfile> custom = new LinkedHashMap<>();
+
+    /** The outline drawn around the block you are looking at (vanilla: thin dark line). */
+    public OutlineProfile blocks = blockDefaults();
+    /** Block outline line width. 0 = keep vanilla width. */
+    public float blockThickness = 0f;
+
+    private static OutlineProfile blockDefaults() {
+        OutlineProfile p = new OutlineProfile(0xFFD800);
+        p.enabled = true;
+        return p;
+    }
 
     public static OutlineConfig get() {
         return instance;
@@ -75,12 +86,15 @@ public class OutlineConfig {
         if (villagers == null) villagers = new OutlineProfile(0x39FF14);
         if (animals == null) animals = new OutlineProfile(0xFFEE32);
         if (mobs == null) mobs = new OutlineProfile(0xFF3B3B);
+        if (blocks == null) blocks = blockDefaults();
         if (custom == null) custom = new LinkedHashMap<>();
         fix(defaults);
         fix(players);
         fix(villagers);
         fix(animals);
         fix(mobs);
+        fix(blocks);
+        blockThickness = Math.max(0f, Math.min(8f, blockThickness));
         custom.values().removeIf(p -> p == null);
         custom.values().forEach(OutlineConfig::fix);
     }
@@ -90,5 +104,6 @@ public class OutlineConfig {
         p.color &= 0xFFFFFF;
         p.brightness = Math.max(0f, Math.min(2f, p.brightness));
         p.speed = Math.max(0.1f, Math.min(5f, p.speed));
+        p.opacity = Math.max(0.05f, Math.min(1f, p.opacity));
     }
 }
